@@ -3,6 +3,7 @@ package yiseth.alitza.dragonmaid;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -20,12 +21,12 @@ public class Comunicacion extends Observable implements Runnable {
 	private String id;
 	private int idh;
 	private boolean hello;
-
-
+	private ArrayList<Personaje> personajes;
 
 	public Comunicacion() {
 		hello =true;
         idh = -1;
+        personajes = new ArrayList<Personaje>();
 		try {
          group = InetAddress.getByName(ADDRESS);
          socket = new MulticastSocket(puerto);
@@ -73,19 +74,19 @@ public class Comunicacion extends Observable implements Runnable {
 	}
 	public void respuesta(byte[] arreglo){
 		String a = new String(arreglo);
+		Object o =null;
+		try {
+			ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(arreglo));
+		     o = ois.readObject();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+		
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
 	
-		System.out.println(a);
+		}
 		if(a.trim().equals("Hello")){
-			String res = "Welcome";
-			DatagramPacket respuesta = new DatagramPacket(res.getBytes(), res.length(),group, puerto);
-			try {
-				socket.send(respuesta);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			if(idh!=-1){
-				hello =false;
-			}
+//			enviarPersonaje(personajes.get(0));
 		}else if(a.trim().equals("Welcome")){
 			if(hello){
 			idh++;
@@ -93,15 +94,39 @@ public class Comunicacion extends Observable implements Runnable {
 			id = ""+idh;
 			setChanged();
 			notifyObservers(idh);
-		}else{
-			notifyObservers(arreglo);
-			
+		}else if(o instanceof Personaje){
+			Personaje p = (Personaje)o;
+			agregarPersonaje(p);
+			this.setChanged();
+			notifyObservers(o);
+		}else if(o instanceof Obstaculo){
+			this.setChanged();
+			notifyObservers(o);
 		}
+		
 	}
 	
+	
+	public void agregarPersonaje(Personaje p){
+		System.out.println(p.getTipo());
+		System.out.println(personajes.size());
+		boolean entro = false;
+		for(int i=0;i<personajes.size();i++){
+			if(p.getTipo() == personajes.get(i).getTipo()){
+				entro = true;
+			}
+		}
+		if(!entro){	
+			personajes.add(p);
+			this.setChanged();
+			notifyObservers(personajes);
+		}
+		
+	}
 	@Override
 	public void notifyObservers(Object arg) {
 		// TODO Auto-generated method stub
+		
 		super.notifyObservers(arg);
 	}
 

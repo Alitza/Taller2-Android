@@ -2,6 +2,8 @@ package yiseth.alitza.dragonmaid;
 
 import java.io.Serializable;
 
+import processing.core.PVector;
+
 
 public class Personaje implements Serializable {
 
@@ -9,12 +11,12 @@ public class Personaje implements Serializable {
 	private String personaje;
 	private int tipo;
 	private int sector;
+	private PVector coordenadas;
 
-
 	
 	
 	
-	public Personaje(int tipo) {
+	public Personaje(int tipo, PVector coordenadas) {
 		
 		
 		this.tipo = tipo;
@@ -25,7 +27,7 @@ public class Personaje implements Serializable {
 			}else if(tipo == 2){
 				this.personaje = "./Imagenes/pTres.png";
 			}
-
+		this.coordenadas = coordenadas;
 	}
 	
 	
@@ -60,7 +62,13 @@ public class Personaje implements Serializable {
 	}
 
 
-
+	public void mover(float x, float y){
+		coordenadas.x = coordenadas.x+x;
+		coordenadas.y = coordenadas.y+y;
+	}
+	public PVector getCoordenadas(){
+		return coordenadas;
+	}
 	public void setTipo(int tipo)
 	{
 	this.tipo = tipo;
@@ -76,7 +84,7 @@ public class Personaje implements Serializable {
 		}
 	}
 	
-/*	public void ajustarCoordenadas(){
+	public void ajustarCoordenadas(){
 		if(tipo == 0){
 			coordenadas.x = 120;
 			coordenadas.y = 120;
@@ -87,7 +95,7 @@ public class Personaje implements Serializable {
 			coordenadas.x = 120;
 			coordenadas.y = 330;
 		}
-	}*/
+	}
 	public void ajustarImg(int tipo){
 		    if(tipo == 0){
 			this.personaje = "./Imagenes/pUno.png";
