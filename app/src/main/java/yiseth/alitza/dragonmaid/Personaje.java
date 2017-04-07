@@ -2,8 +2,9 @@ package yiseth.alitza.dragonmaid;
 
 import java.io.Serializable;
 
+import processing.core.PApplet;
+import processing.core.PImage;
 import processing.core.PVector;
-
 
 public class Personaje implements Serializable {
 

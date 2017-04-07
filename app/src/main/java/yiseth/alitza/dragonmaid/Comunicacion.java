@@ -18,14 +18,13 @@ public class Comunicacion extends Observable implements Runnable {
 	private MulticastSocket socket;
 	private final String ADDRESS = "224.2.2.2";
 	private InetAddress group;
-	private String id;
-	private int idh;
+	private AutoId id;
 	private boolean hello;
 	private ArrayList<Personaje> personajes;
 
 	public Comunicacion() {
+		id = new AutoId(0);
 		hello =true;
-        idh = -1;
         personajes = new ArrayList<Personaje>();
 		try {
          group = InetAddress.getByName(ADDRESS);
@@ -58,11 +57,11 @@ public class Comunicacion extends Observable implements Runnable {
 		}
 	}
 	
-	public void enviarPersonaje(Personaje p){
+	public void enviarObjeto(Object o){
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		try {
 			ObjectOutputStream oos = new ObjectOutputStream(baos);
-			oos.writeObject(p);
+			oos.writeObject(o);
 			oos.flush();
 			byte[] ob = baos.toByteArray();
 			   DatagramPacket hi = new DatagramPacket(ob, ob.length,group, puerto);	
@@ -85,15 +84,19 @@ public class Comunicacion extends Observable implements Runnable {
 			// TODO Auto-generated catch block
 	
 		}
-		if(a.trim().equals("Hello")){
-//			enviarPersonaje(personajes.get(0));
-		}else if(a.trim().equals("Welcome")){
-			if(hello){
-			idh++;
+		if(o instanceof AutoId && hello){
+			AutoId aut = (AutoId) o;
+			if(aut.getId()>=id.getId()){
+			id.setId(aut.getId()+1);
 			}
-			id = ""+idh;
 			setChanged();
-			notifyObservers(idh);
+			notifyObservers(true);
+			System.out.println(id.getId()+"----------------------------------------------------------------------------------------");
+		}else if(a.trim().equals("Hello")){
+			enviarObjeto(id);
+			if(id.getId() != 0){
+				hello = false;
+			}
 		}else if(o instanceof Personaje){
 			Personaje p = (Personaje)o;
 			agregarPersonaje(p);
@@ -108,8 +111,6 @@ public class Comunicacion extends Observable implements Runnable {
 	
 	
 	public void agregarPersonaje(Personaje p){
-		System.out.println(p.getTipo());
-		System.out.println(personajes.size());
 		boolean entro = false;
 		for(int i=0;i<personajes.size();i++){
 			if(p.getTipo() == personajes.get(i).getTipo()){
@@ -120,6 +121,11 @@ public class Comunicacion extends Observable implements Runnable {
 			personajes.add(p);
 			this.setChanged();
 			notifyObservers(personajes);
+		}
+		if(personajes.size() == 3){
+			boolean comienza =true;
+			setChanged();
+			notifyObservers(comienza);
 		}
 		
 	}

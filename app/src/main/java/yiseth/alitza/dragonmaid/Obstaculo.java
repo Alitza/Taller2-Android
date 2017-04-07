@@ -11,39 +11,40 @@ public class Obstaculo implements Serializable{
 	
 	
 	private int tipo;
-	private PApplet app;
-	private PImage img;
+	private String img;
 	private PVector coordenadas;
 	private int sector;
 	
 	
 	
 	
-	public Obstaculo(int tipo, PApplet app) {
+	public Obstaculo(int tipo) {
 		super();
 		this.tipo = tipo;
-		this.app = app;
+		
 	}
 	
 	
+	
+	public String getImg() {
+		return img;
+	}
+
+
+
+	public void setImg(String img) {
+		this.img = img;
+	}
+
+
+
 	public int getTipo() {
 		return tipo;
 	}
 	public void setTipo(int tipo) {
 		this.tipo = tipo;
 	}
-	public PApplet getApp() {
-		return app;
-	}
-	public void setApp(PApplet app) {
-		this.app = app;
-	}
-	public PImage getImg() {
-		return img;
-	}
-	public void setImg(PImage img) {
-		this.img = img;
-	}
+	
 	public PVector getCoordenadas() {
 		return coordenadas;
 	}

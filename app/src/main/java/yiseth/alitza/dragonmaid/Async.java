@@ -5,14 +5,17 @@ import android.os.AsyncTask;
 /**
  * Created by prada on 5/04/2017.
  */
-public class Async extends AsyncTask<String, String, String> {
+public class Async extends AsyncTask<String, String, Comunicacion> {
+
 
 
     @Override
-    protected String doInBackground(String... strings) {
-        Comunicacion c = new Comunicacion();
-        Thread t = new Thread(c);
+    protected Comunicacion doInBackground(String... strings) {
+        Comunicacion com = new Comunicacion();
+        Thread t = new Thread(com);
         t.start();
-        return null;
+        return com;
     }
+
+
 }
