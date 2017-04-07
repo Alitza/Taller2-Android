@@ -90,7 +90,7 @@ public class Comunicacion extends Observable implements Runnable {
 			id.setId(aut.getId()+1);
 			}
 			setChanged();
-			notifyObservers(true);
+			notifyObservers(id);
 			System.out.println(id.getId()+"----------------------------------------------------------------------------------------");
 		}else if(a.trim().equals("Hello")){
 			enviarObjeto(id);
